@@ -1,0 +1,10 @@
+[MASTER]
+ignore=.git env tests
+persistent=no
+
+[REPORTS]
+output-format=parseable
+reports=no
+
+[BASIC]
+good-names=id,i,j,k,x,y,z,ex,Run,_,ui,ip

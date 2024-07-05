@@ -1,0 +1,50 @@
+---
+# Use the shared pipeline from COSS
+include:
+  - project: connectivity-oss/software-development/shared-gitlab-pipelines
+    file: /pypackage.yml
+    ref: "2022"
+
+
+variables:
+  bb_sonar_project_name: ${CI_PROJECT_NAME}
+
+  # Required for the shared pipeline
+  REFERENCE_PROJECT: "connectivity-oss/software-development/clproc"
+  REFERENCE_BRANCH: "master"
+  SRC_ROOT: src
+
+
+# REQUIRED type-check opt-in. Three options are available:
+#   ".typecheck-none" - Disables type-checks
+#   ".typecheck-mypy" - Uses mypy for type-checks
+#   ".typecheck-pyright" - Uses pyright for type-checks (backend of pylance)
+typecheck:
+  extends: ".typecheck-pyright"
+  stage: static-analysis
+
+unit-tests:
+  stage: static-analysis
+  image: harbor.ptech.lu/docker-hub/library/python:3.10.6-slim
+  script:
+    - 'printf "\e[0Ksection_start:%s:env_log[collapsed=true]\r\e[0K\
+       Python Environment Setup" "$(date +%s)"'
+    - "pip install
+       --extra-index-url=${LOCAL_PACKAGE_REPOSITORY_PYTHON}
+       .[dev,test]"
+    - printf "\e[0Ksection_end:%s:env_log\r\e[0K" "$(date +%s)"
+    - "pytest
+      --color yes
+      --junit-xml=test-report.xml
+      --cov-branch
+      --cov-report html
+      --cov-report xml
+      --cov-report term
+      --cov ${CI_PROJECT_NAME}"
+  artifacts:
+    when: always
+    reports:
+      junit: test-report.xml
+    paths:
+      - test-report.xml
+      - coverage.xml

@@ -1,0 +1,25 @@
+---
+# The "meta" key is used internally to control how the release-file is to be
+# interpreted
+meta:
+  # meta.version indicates that this is a release-file of a particular
+  # version. Only 1.0 is supporte at the time of this writing.
+  version: '1.0'
+
+# The "releases" key contains a mapping from release-versions to the
+# additional data. Each key of the mapping is the release version as string.
+releases:
+  '1.1':
+    date: 2022-08-26
+  '1.0':
+    # The date represents the point in time when the release was made.
+    date: 2022-08-02
+    # Notes can contain a multiline description for this particular release.
+    notes: |-
+      Initial Release
+
+      This release is based on code of an internal development helper
+      library and makes it available as standalone tool.
+
+      In addition, release `1.0` of `clproc` provides a slightly simplified
+      changelog structure.

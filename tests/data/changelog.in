@@ -1,0 +1,24 @@
+version; type ; subject ; issue_ids ; internal ; highlight ; date ; detail
+
+2.8.1 ; changed  ; Jenkins job fixed.
+2.8.1 ; changed  ; Removed hardcoded value from `fab autotest`.
+2.8.1 ; added    ; Optional "path" argument to `fab autotest`.
+
+2.8.0 ; added    ; New task: `fabrips.core.create_config`
+      ; added    ; New task: `fabrips.core.jenkins_update_factory`
+      ; added    ; New helper: `fabrips.helpers.get_gitlabci_db_creds`
+      ; added    ; New helper: `fabrips.helpers.DB_USER_MAP`
+      ; added    ; New helper: `fabrips.helpers._get_jenkins_crumb_header` ; 6485
+
+2.7.1 ; fixed    ; Force jenkins url to use HTTPS.        ; 6484
+2.7.2 ; fixed    ; Remove build folder before publishing. ; 6536
+2.7.2 ; added    ; Switch from .tar.gz to .whl.
+2.7.3 ; changed  ; Synchronised development barnches.
+2.7.4 ; fixed    ; Fix docroot host.
+2.7.5 ; added    ; Allow unattended publishing of docs.
+
+2.7.0 ; added      ; New Task: `autotest`                 ;;; h ;;"
+    This taskl sets up inotify watches and reruns tests automatically if files
+    change. This uses `pytest-cache` instead of `pytest-xdist` to rerun only
+    failed tests. It also automatically generates coverage reports.
+    "

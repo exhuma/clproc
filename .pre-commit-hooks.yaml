@@ -1,0 +1,18 @@
+---
+- id: autocheck
+  name: Check version compliance (autodetect version)
+  entry: clproc changelog.in autocheck
+  language: python
+  files: changelog.in
+  pass_filenames: false
+  args:
+    - --exact
+- id: render
+  name: Convert changelog.in into another format (default=md)
+  entry: clproc changelog.in render
+  language: python
+  files: changelog.in
+  pass_filenames: false
+  args:
+    - --format
+    - md
