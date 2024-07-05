@@ -48,3 +48,17 @@ unit-tests:
     paths:
       - test-report.xml
       - coverage.xml
+
+upload:
+  stage: publish
+  image: harbor.ptech.lu/docker-hub/bitnami/git
+  needs:
+    - unit-tests
+  script:
+    - "git remote add github https://${GITHUB_ACCESS_TOKEN}@github.com/\
+       post-luxembourg/clproc.git"
+    - git checkout master
+    - git push github master
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
