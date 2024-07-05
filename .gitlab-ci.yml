@@ -10,6 +10,7 @@ variables:
   # Required for the shared pipeline
   REFERENCE_PROJECT: "github/clproc"
   REFERENCE_BRANCH: "master"
+  PYTHON_VERSION: "3.10"
   SRC_ROOT: src
 
 
@@ -39,7 +40,7 @@ metadata:
     - when: on_success
 
 ci-lint:
-  image: "harbor.ptech.lu/docker-hub/library/python:3.10"
+  image: "harbor.ptech.lu/docker-hub/library/python:${PYTHON_VERSION}"
   stage: static-analysis
   needs: []
   script:
@@ -128,7 +129,7 @@ safety:
 
 ruff:
   stage: static-analysis
-  image: "harbor.ptech.lu/docker-hub/library/python:3.10"
+  image: "harbor.ptech.lu/docker-hub/library/python:${PYTHON_VERSION}"
   allow_failure: true
   before_script:
     # To support install-pkg-from-gitlab we need git to be available in the
@@ -179,7 +180,7 @@ typecheck:
 
 unit-tests:
   stage: static-analysis
-  image: harbor.ptech.lu/docker-hub/library/python:3.10.6-slim
+  image: harbor.ptech.lu/docker-hub/library/python:${PYTHON_VERSION}-slim
   script:
     - 'printf "\e[0Ksection_start:%s:env_log[collapsed=true]\r\e[0K\
        Python Environment Setup" "$(date +%s)"'
@@ -207,6 +208,9 @@ upload:
   stage: publish
   image: harbor.ptech.lu/docker-hub/bitnami/git
   needs:
+    - bandit
+    - pre-commit
+    - typecheck
     - unit-tests
   script:
     - "git remote add github https://${GITHUB_ACCESS_TOKEN}@github.com/\
