@@ -1,27 +1,181 @@
 ---
-# Use the shared pipeline from COSS
-include:
-  - project: connectivity-oss/software-development/shared-gitlab-pipelines
-    file: /pypackage.yml
-    ref: "2022"
-
+stages:
+  - metadata
+  - static-analysis
+  - publish
 
 variables:
   bb_sonar_project_name: ${CI_PROJECT_NAME}
 
   # Required for the shared pipeline
-  REFERENCE_PROJECT: "connectivity-oss/software-development/clproc"
+  REFERENCE_PROJECT: "github/clproc"
   REFERENCE_BRANCH: "master"
   SRC_ROOT: src
 
 
-# REQUIRED type-check opt-in. Three options are available:
-#   ".typecheck-none" - Disables type-checks
-#   ".typecheck-mypy" - Uses mypy for type-checks
-#   ".typecheck-pyright" - Uses pyright for type-checks (backend of pylance)
-typecheck:
-  extends: ".typecheck-pyright"
+.install-pkg: &install-pkg
+  - "[ -f requirements.txt ] && pip install
+    --extra-index-url=${LOCAL_PACKAGE_REPOSITORY_PYTHON}
+    --requirement requirements.txt"
+  - pip install
+    --extra-index-url=${LOCAL_PACKAGE_REPOSITORY_PYTHON}
+    .[dev,test,doc]
+
+# Collect project-metadata (name, version, ...) and provide it to subsequent
+# jobs as environment variables via "artifacts.dotenv"
+# TODO: Make the gitlab-action generate a dotenv file with useful variables
+metadata:
+  image:
+    name: harbor.ptech.lu/gitlab-actions/pyproject-build:release-2022.08.23.01
+    entrypoint: [""]
+  stage: metadata
+  script:
+    - "echo PTECH_PROJECT_VERSION=$(/usr/local/bin/get-version) >>
+      ${CI_PROJECT_DIR}/job-${CI_JOB_ID}.env"
+  artifacts:
+    reports:
+      dotenv: "${CI_PROJECT_DIR}/job-${CI_JOB_ID}.env"
+  rules:
+    - when: on_success
+
+ci-lint:
+  image: "harbor.ptech.lu/docker-hub/library/python:3.10"
   stage: static-analysis
+  needs: []
+  script:
+    - pip install yamllint
+    - yamllint .gitlab-ci.yml
+  except:
+    - tags
+
+
+pre-commit:
+  image: harbor.ptech.lu/gitlab-actions/pre-commit:release-3.6.1
+  stage: static-analysis
+  script:
+    - /run.sh
+  rules:
+    - exists:
+        - .pre-commit-config.yaml
+
+
+spell-check:
+  image:
+    name: harbor.ptech.lu/gitlab-actions/cspell:release-2024.05.29
+    entrypoint: [""]
+  stage: static-analysis
+  script:
+    - |
+      set +e
+      if [ ! -d ${SRC_ROOT:-src} ]; then
+        echo ${SRC_ROOT:-src} does not exist!
+        exit 1
+      fi
+      /run.sh --gitignore "${SRC_ROOT:-src}/**/*" > cspell-report.json
+      status1=$?
+      /usr/local/bin/display-report cspell-report.json
+      status2=$?
+      if [ ${status1} -ne 0 ] || [ ${status2} -ne 0 ]; then
+        exit 1
+      fi
+  artifacts:
+    when: always
+    reports:
+      codequality: cspell-report.json
+  rules:
+    - exists:
+        - cspell.config.yaml
+# This job verifies the contents of the vulture-whitelist
+#
+# If the whitelist contains unused items, this should fail
+#
+# This job only runs if the file vulture-whitelist.py exists
+#
+# See https://pypi.org/project/vulture
+check-vulture-whitelist:
+  stage: static-analysis
+  image: "harbor.ptech.lu/docker-hub/library/python:${PYTHON_VERSION}"
+  script:
+    - "python3 -m venv env"
+    - "./env/bin/pip install
+       --extra-index-url=${LOCAL_PACKAGE_REPOSITORY_PYTHON}
+       .[dev,test]"
+    - "./env/bin/python3 vulture-whitelist.py"
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "tags"
+      when: never
+    - exists:
+        - vulture-whitelist.py
+bandit:
+  image: harbor.ptech.lu/gitlab-actions/bandit:release-2022.08.24.01
+  stage: static-analysis
+  script:
+    - /run.sh
+  rules:
+    - when: on_success
+
+safety:
+  image: harbor.ptech.lu/gitlab-actions/safety:release-2022.09.02.02
+  stage: static-analysis
+  script:
+    - /run.sh
+  rules:
+    - exists:
+        - requirements.txt
+      when: on_success
+
+ruff:
+  stage: static-analysis
+  image: "harbor.ptech.lu/docker-hub/library/python:3.10"
+  allow_failure: true
+  before_script:
+    # To support install-pkg-from-gitlab we need git to be available in the
+    # container
+    - "[ -f dev-requirements.txt ] && apt update && apt install -y git"
+  script:
+    - python -m venv env
+    - source ./env/bin/activate
+    - pip install ruff
+    # Run first with a default output to display something in the CI
+    - ruff check ${SRC_ROOT} || true
+    # Next, generate a code-climate report for GitLab
+    - ruff --output-format=gitlab ${SRC_ROOT} > ruff-codeclimate.json
+  artifacts:
+    when: always
+    reports:
+      codequality: ruff-codeclimate.json
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    # Don't run this on the default branch as this is already handled by
+    # SonarQube. It is more likely that "ruff" will exit in an error-state
+    # than SonarQube which would cause "warning" states on the default branch.
+    # We accept those on the feature-branches
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - exists:
+        - sonar-project.properties
+      when: on_success
+
+typecheck:
+  stage: static-analysis
+  image: "harbor.ptech.lu/docker-hub/library/python:${PYTHON_VERSION}"
+  before_script:
+    # To support install-pkg-from-gitlab we need git to be available in the
+    # container
+    - "[ -f dev-requirements.txt ] && apt update && apt install -y git"
+  script:
+    - python -m venv env
+    - source env/bin/activate
+    - *install-pkg
+    - pip install "pyright!=1.1.309"
+    - pyright ${SRC_ROOT}
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
 
 unit-tests:
   stage: static-analysis
@@ -60,5 +214,7 @@ upload:
     - git checkout master
     - git push github master
   rules:
-    - if: $CI_COMMIT_REF_PROTECTED == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: "\
+        $CI_COMMIT_REF_PROTECTED == 'true' &&
+        $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       when: on_success
