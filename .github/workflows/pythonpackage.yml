@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Check black formatting
+      - name: Run pre-commit checks
         run: |
           pip install pre-commit
           pre-commit run --all
