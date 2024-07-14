@@ -12,6 +12,15 @@ description = "Generate curated changelogs into various formats."
 readme = "README.rst"
 license = { text="MIT License" }
 requires-python = ">=3.7"
+keywords = [
+    "changelog",
+    "documentation",
+    "json",
+    "markdown",
+    "pre-commit",
+    "release notes",
+    "yaml",
+]
 dependencies = [
     "packaging",
     "python-dateutil",
@@ -47,7 +56,9 @@ dev = [
 ]
 
 [project.urls]
-"Repository" = "https://github.com/post-luxembourg/clproc"
+"Source" = "https://github.com/post-luxembourg/clproc"
+"Issues" = "https://github.com/post-luxembourg/clproc/issues"
+
 
 [tool.black]
 line-length = 80
