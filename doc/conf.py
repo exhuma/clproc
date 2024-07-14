@@ -1,4 +1,6 @@
 # pylint: skip-file
+from sphinx.application import Sphinx
+
 import clproc
 
 extensions = [
@@ -37,3 +39,12 @@ latex_documents = [
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
+
+
+def setup(app: Sphinx) -> None:
+    """
+    Auto generate the API docs with spinx-apidoc
+    """
+    from sphinx.ext.apidoc import main
+
+    main(["--separate", "--output-dir", "doc/api", "--force", "src/clproc"])
