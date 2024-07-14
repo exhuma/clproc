@@ -5,6 +5,7 @@ template.
 It centralises important (externally advertised) application logic which both
 versions have in common.
 """
+
 import csv
 import logging
 import re
@@ -317,7 +318,7 @@ def with_release_information(
     :param additional_data: A mapping from a release-version to the data
         provided in the release-file
     :return: An iterable over modified release entries, each with the
-    additional data added to it.
+        additional data added to it.
     """
     for release in releases:
         if release.version:

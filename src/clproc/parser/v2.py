@@ -1,6 +1,7 @@
 """
 Parser for the legacy (first version) changelog.in file
 """
+
 import logging
 from datetime import date
 from os.path import exists
