@@ -3,7 +3,11 @@
   name: Check version compliance (autodetect version)
   entry: clproc changelog.in autocheck
   language: python
-  files: changelog.in
+  files: "(\
+    changelog.in|\
+    pyproject.toml|\
+    package.json\
+  )"
   pass_filenames: false
   args:
     - --exact
