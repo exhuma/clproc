@@ -55,9 +55,12 @@ Example Input File
 pre-commit integration
 ----------------------
 
-As of version 1.2.0, ``clproc`` can be integrated with pre-commit_. When using
-with ``pre-commit`` the *expected* version will be auto-detected. At the time
-of this writing, ``clproc`` supports only two metadata sources:
+As of version 1.2.0, ``clproc`` can be integrated with pre-commit_. The
+pre-commit hook will ensure that the current project-version also has a matching
+entry in the changelog
+
+The *expected* version will be auto-detected. At the time of this writing,
+``clproc`` supports only two metadata sources:
 
 - A ``pyproject.toml`` file using setuptools_ as build-backend
 - A ``package.json`` file for NPM packages
@@ -65,18 +68,17 @@ of this writing, ``clproc`` supports only two metadata sources:
 The arguments ``--exact`` and ``--release-only`` are of primary interest. Using
 "exact" checking, the changelog *must* contain an entry matching the version
 number in the metadata file *exactly*. When using ``--release-only``, only the
-"release-nodes" (see the docs for details) are checked, providing a more
-lenient check.
+"release-nodes" ("nodes" with a "d". Not a "t". See the docs for details) are
+checked, providing a more lenient check.
 
 
 Example pre-commit config:
 
 .. code-block:: yaml
 
-
     ---
     repos:
-      - repo: https://git.ptech.lu/connectivity-oss/software-development/clproc.git
+      - repo: https://github.com/post-luxembourg/clproc.git
         rev: v1.2.0
         hooks:
           - id: clproc
