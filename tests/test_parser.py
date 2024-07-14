@@ -15,13 +15,9 @@ from clproc.exc import ClprocException
 from clproc.model import (
     ChangelogEntry,
     ChangelogType,
-    FileMetadata,
-    FileMetadataField,
     IssueId,
-    ParsingIssueMessage,
     ReleaseEntry,
     ReleaseInformation,
-    TParseIssueHandler,
 )
 from clproc.parser import core
 
