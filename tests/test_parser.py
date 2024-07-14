@@ -12,7 +12,18 @@ from packaging.version import Version
 
 from clproc import parser
 from clproc.exc import ClprocException
-from clproc.model import IssueId
+from clproc.model import (
+    ChangelogEntry,
+    ChangelogType,
+    FileMetadata,
+    FileMetadataField,
+    IssueId,
+    ParsingIssueMessage,
+    ReleaseEntry,
+    ReleaseInformation,
+    TParseIssueHandler,
+)
+from clproc.parser import core
 
 DATA_DIR = Path(__file__).parent / "data"
 TEST_DATA = (DATA_DIR / "changelog.in").read_text(encoding="utf8")
@@ -155,3 +166,50 @@ def test_multiple_url_templates():
         IssueId(123, "default"),
         IssueId(234, "tpl2"),
     }
+
+
+@pytest.mark.parametrize(
+    "version, expected_notes, expected_date",
+    [
+        (Version("1.0"), "modified-notes", date(2000, 2, 3)),
+        (Version("1.2"), "unmodified-notes", date(2000, 1, 1)),
+        (Version("2.3"), "unmodified-notes", date(2000, 1, 1)),
+    ],
+)
+def test_with_release_information(version, expected_notes, expected_date):
+    """
+    If a "release entry" matches with additional data from the release-file, we
+    expect the meta-data to be updated (the release-file takes precedence). If
+    the version does not match the release, the meta-data should remain
+    unmodified.
+    """
+    entries = [
+        ReleaseEntry(
+            version=version,
+            release_date=date(2000, 1, 1),
+            notes="unmodified-notes",
+            logs=(
+                ChangelogEntry(
+                    version=Version("1.2.3"),
+                    type_=ChangelogType.ADDED,
+                    is_internal=False,
+                    is_highlight=False,
+                    subject="log-entry-1",
+                    issue_ids=core.parse_issue_ids("123"),
+                    detail="log-detail-1",
+                ),
+            ),
+        )
+    ]
+    with_info = core.with_release_information(
+        entries,
+        {
+            Version("1.0"): ReleaseInformation(
+                date=date(2000, 2, 3),
+                notes="modified-notes",
+            )
+        },
+    )
+    result = list(with_info)
+    assert result[0].release_date == expected_date
+    assert result[0].notes == expected_notes
