@@ -8,7 +8,8 @@ import pytest
 
 from clproc.exc import ReleaseFormatError
 from clproc.model import FileMetadata
-from clproc.parser import extract_metadata, v2
+from clproc.parser import v2
+from clproc.parser.core import extract_metadata
 from clproc.reporting import default_parse_issue_handler
 
 
@@ -21,7 +22,7 @@ from clproc.reporting import default_parse_issue_handler
         ('---\nmeta:\n  version: "1.0"', "releases"),
     ],
 )
-def test_version_format_error(data: str, error_match: str):
+def test_version_format_error(data: str, error_match: str) -> None:
     """
     Errors in release-file metadata should have a helpful message
     """
@@ -52,7 +53,7 @@ def test_no_release_file() -> None:
 )
 def test_release_parsing_errors(
     version_str: str, data: Dict[str, Any], error_match: str
-):
+) -> None:
     """
     Ensure the relase-info blocks raise helpful errors
     """
@@ -61,7 +62,7 @@ def test_release_parsing_errors(
     error.match(error_match)
 
 
-def test_release_information():
+def test_release_information() -> None:
     """
     If we have additional information for a specific release, include that
     information to the parsed output
@@ -101,7 +102,7 @@ def test_release_information():
     assert changelog.releases[0].notes.strip() == "Hello World"
 
 
-def test_release_notes_markdown():
+def test_release_notes_markdown() -> None:
     """
     The release notes should be valid markdown and therefore should be returned
     unmodified.
@@ -152,7 +153,7 @@ def test_release_notes_markdown():
     ]
 
 
-def test_release_information_no_date():
+def test_release_information_no_date() -> None:
     """
     Release information should allow empty
     """
@@ -193,7 +194,7 @@ def test_release_information_no_date():
     assert changelog.releases[0].notes.strip() == "Hello World"
 
 
-def test_log_details():
+def test_log_details() -> None:
     """
     Since 2.0 removed the "date" column we must ensure that the "detail" field
     is not dropped.
@@ -213,7 +214,7 @@ def test_log_details():
     assert changelog.releases[0].logs[0].detail == "This is a detail"
 
 
-def test_metadata_multiple_templates():
+def test_metadata_multiple_templates() -> None:
     data = StringIO(
         dedent(
             """\
