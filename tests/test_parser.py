@@ -138,7 +138,7 @@ def test_invalid_meta_version() -> None:
         parser.parse(data)
 
 
-def test_multiple_url_templates():
+def test_multiple_url_templates() -> None:
     """
     We should be able to specify more than one issue-url template
     """
@@ -172,7 +172,9 @@ def test_multiple_url_templates():
         (Version("2.3"), "unmodified-notes", date(2000, 1, 1)),
     ],
 )
-def test_with_release_information(version, expected_notes, expected_date):
+def test_with_release_information(
+    version: Version, expected_notes: str, expected_date: date
+) -> None:
     """
     If a "release entry" matches with additional data from the release-file, we
     expect the meta-data to be updated (the release-file takes precedence). If
@@ -191,7 +193,7 @@ def test_with_release_information(version, expected_notes, expected_date):
                     is_internal=False,
                     is_highlight=False,
                     subject="log-entry-1",
-                    issue_ids=core.parse_issue_ids("123"),
+                    issue_ids=frozenset(core.parse_issue_ids("123")),
                     detail="log-detail-1",
                 ),
             ),

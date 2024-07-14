@@ -267,7 +267,7 @@ def extract_metadata(
     """
     # pylint: enable=line-too-long
     initial_position = infile.tell()
-    kwargs = {}
+    kwargs: dict[str, Any] = {}
     # Mapping from keyname as used in the file-content to the argument name of
     # the FileMetadata object. With a callable that converts the value from
     # string to the proper type.
