@@ -31,7 +31,7 @@ Input (simple)
 
 See :ref:`input_formats` for advanced examples.
 
-.. code-block:: csv
+.. code-block:: text
   :caption: changelog.in
 
   # -*- changelog-version: 2.0 -*-

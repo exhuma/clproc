@@ -63,7 +63,7 @@ Important changes to version 1.0
 
 * **The special "release" lines are no longer supported**
 
-  Releases are now specified in a "release-file". See :ref:`file-metadata`.
+  Releases are now specified in a "release-file". See :ref:`file_metadata`.
 
   This line caused inconsistencies in handling of input lines, was hard to read
   and rarely used. A separate release-file improves overall tidyness and
