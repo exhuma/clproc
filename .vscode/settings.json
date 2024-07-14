@@ -1,14 +1,13 @@
 {
   "editor.formatOnSave": true,
   "python.analysis.typeCheckingMode": "basic",
-  "python.formatting.provider": "black",
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true
+    "source.organizeImports": "explicit"
   },
   "files.exclude": {
     "**/__pycache__": true
   },
-  "editor.rulers": [80],
-  "python.linting.pylintEnabled": true,
-  "python.linting.mypyEnabled": false
+  "editor.rulers": [
+    80
+  ]
 }
