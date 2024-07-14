@@ -62,7 +62,6 @@ def test_full_version() -> None:
     """
     Ensure the raw version number includes pre-releases
     """
-    # pylint: disable=line-too-long
     test_data = dedent(
         """\
         version; type ; subject ; issue_ids ; internal ; highlight ; date ; detail
@@ -73,7 +72,6 @@ def test_full_version() -> None:
         2.8.1rc1 ; added    ; Optional "path" argument to `fab autotest`.
         """
     )
-    # pylint: enable=line-too-long
     result = parser.parse(StringIO(test_data)).changelog
     versions = [str(row.version) for row in result.releases[0].logs]
     assert versions == ["2.8.1.post1", "2.8.1", "2.8.1rc2", "2.8.1rc1"]

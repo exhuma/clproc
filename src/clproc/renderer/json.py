@@ -2,6 +2,7 @@
 This module contains the definition of a renderer which transforms a changelog
 object into a JSON document.
 """
+
 import json
 from datetime import date
 from typing import Any, ClassVar, Dict, Iterable, List
@@ -21,8 +22,6 @@ class CustomEncoder(json.JSONEncoder):
     """
     Custom JSON encoder for the JSONRenderer
     """
-
-    # pylint: disable=method-hidden
 
     def default(self, o: Any) -> Any:
         if isinstance(o, frozenset):
@@ -90,8 +89,6 @@ class JSONRenderer:
     """
     Renders a changelog instance as JSON
     """
-
-    # pylint: disable=too-few-public-methods
 
     FORMAT: ClassVar[str] = "json"
 

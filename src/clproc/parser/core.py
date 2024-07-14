@@ -255,7 +255,6 @@ def aggregate_releases(
 def extract_metadata(
     infile: TextIO, parse_issue_handler: TParseIssueHandler
 ) -> FileMetadata:
-    # pylint: disable=line-too-long
     """
     Search *infile* for a line containing metadata following emacs style file
     headers::
@@ -265,7 +264,6 @@ def extract_metadata(
 
     .. seealso:: https://www.gnu.org/software/emacs/manual/html_node/emacs/Specifying-File-Variables.html#Specifying-File-Variables
     """
-    # pylint: enable=line-too-long
     initial_position = infile.tell()
     kwargs: dict[str, Any] = {}
     # Mapping from keyname as used in the file-content to the argument name of
@@ -287,7 +285,6 @@ def extract_metadata(
                 continue
             for field, (meta_kwarg, converter) in keydef.items():
                 if field.value in matches:
-                    # pylint: disable=not-callable
                     if field == FileMetadataField.ISSUE_URL_TEMPLATE:
                         container = kwargs.setdefault("issue_url_templates", {})
                         source, template = converter(matches[field.value])

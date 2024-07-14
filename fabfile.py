@@ -1,7 +1,7 @@
-# pylint: skip-file
 """
 Application development tasks
 """
+
 from invoke import Context, task  # type: ignore
 
 

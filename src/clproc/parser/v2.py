@@ -119,7 +119,7 @@ def extract_release_information(
     :param changelog_file: Ignored in this version
     :param release_file: a YAML file containing the release data
     """
-    del changelog_file  # pylint "hint"
+    del changelog_file
     release_information: Dict[Version, ReleaseInformation] = {}
     if release_file is None:
         return release_information

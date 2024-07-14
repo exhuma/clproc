@@ -51,14 +51,6 @@ force_grid_wrap = 0
 virtual_env = "env"
 profile = "black"
 
-[tool.pylint.basic]
-good-names = ["i", "j", "k", "ex", "Run", "_", "id", "ip"]
-
-[tool.pylint.format]
-max-line-length = "80"
-# Ignore RST external links (f.ex.: ".. _thelink: https://example.com")
-ignore-long-lines = '^\s*(\.\. _\w+: )?https?://.*'
-
 [tool.coverage.run]
 relative_files = true
 source = ["clproc"]

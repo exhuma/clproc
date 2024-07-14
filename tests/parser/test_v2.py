@@ -116,7 +116,6 @@ def test_release_notes_markdown():
         )
     )
     data.name = f"<StringIO from {__file__}>"
-    # pylint: disable=line-too-long
     release_data = StringIO(
         dedent(
             """\
@@ -135,7 +134,6 @@ def test_release_notes_markdown():
         )
     )
     release_data.name = f"<StringIO from {__file__}>"
-    # pylint: enable=line-too-long
     my_open = mock_open()
     my_open.return_value = release_data
     with patch("clproc.parser.v2.open", my_open), patch(
