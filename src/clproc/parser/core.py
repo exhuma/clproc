@@ -290,7 +290,7 @@ def extract_metadata(
                     # pylint: disable=not-callable
                     if field == FileMetadataField.ISSUE_URL_TEMPLATE:
                         container = kwargs.setdefault("issue_url_templates", {})
-                        source, template = converter(matches[field.value])  # type: ignore # noqa
+                        source, template = converter(matches[field.value])
                         container[source] = template
                     else:
                         kwargs[meta_kwarg] = converter(matches[field.value])

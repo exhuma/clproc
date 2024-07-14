@@ -76,12 +76,5 @@ sort = "-cover"
 [tool.coverage.html]
 show_contexts = true
 
-[tool.pyright]
-# strict = ["clproc"]
-exclude = ["fabfile.py", "env"]
-ignore = ["tests"]
-venvPath = "."
-venv = "env"
-
 [tool.mypy]
 strict = true

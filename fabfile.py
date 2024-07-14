@@ -2,11 +2,11 @@
 """
 Application development tasks
 """
-from invoke import task
+from invoke import Context, task  # type: ignore
 
 
-@task
-def develop(ctx):
+@task  # type: ignore
+def develop(ctx: Context):
     """
     Install the application in development mode
     """

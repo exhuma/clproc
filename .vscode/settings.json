@@ -1,6 +1,6 @@
 {
   "editor.formatOnSave": true,
-  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.typeCheckingMode": "off",
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
