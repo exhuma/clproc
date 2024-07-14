@@ -13,7 +13,7 @@ Topics
 .. toctree::
     :maxdepth: 1
 
-    <changelog>
+    changelog
     usage
     background
     log_vs_releases
