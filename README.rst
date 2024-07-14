@@ -61,6 +61,7 @@ of this writing, ``clproc`` supports only two metadata sources:
 
 - A ``pyproject.toml`` file using setuptools_ as build-backend
 - A ``package.json`` file for NPM packages
+- A ``cargo.toml`` file for rust crates
 
 The arguments ``--exact`` and ``--release-only`` are of primary interest. Using
 "exact" checking, the changelog *must* contain an entry matching the version
