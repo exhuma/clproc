@@ -2,13 +2,15 @@
 """
 Application development tasks
 """
-# pylint: skip-file
-from fabrips import all_tasks
+from invoke import task
 
-# from fabrips.helpers import Hooks
-from invoke import Collection, Context, Result, task
 
-namespace = all_tasks()
-
-clproc = Collection("clproc")
-namespace.add_collection(clproc)
+@task
+def develop(ctx):
+    """
+    Install the application in development mode
+    """
+    ctx.config.run.pty = True
+    ctx.run("[ -d env ] || python3 -m venv env")
+    ctx.run("env/bin/pip install --upgrade pip")
+    ctx.run("env/bin/pip install -e .[dev,test]")
