@@ -2,10 +2,10 @@
 import clproc
 
 extensions = [
+    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
-    "recommonmark",
 ]
 
 templates_path = ["_templates"]
