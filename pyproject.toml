@@ -43,7 +43,7 @@ dev = [
 "Repository" = "https://github.com/post-luxembourg/clproc"
 
 [tool.black]
-line_length = 80
+line-length = 80
 
 [tool.isort]
 line_length = 80
