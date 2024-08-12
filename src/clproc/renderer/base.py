@@ -4,6 +4,7 @@ This module contains the main entry-point for renderer instantiation.
 It contains the factory function :py:func:`~.create` to get a reference to a
 renderer.
 """
+
 from typing import ClassVar, List, Optional, Protocol, Type
 
 from clproc.model import Changelog, FileMetadata
@@ -24,7 +25,6 @@ def create(format_: str) -> Optional["Renderer"]:
 
 
 class Renderer(Protocol):
-
     """
     Superclass for changelog renderers.
 
@@ -34,8 +34,6 @@ class Renderer(Protocol):
         >>> create('markdown')  # MarkdownRenderer
         >>> create('json')  # JSONRenderer
     """
-
-    # pylint: disable=too-few-public-methods, unnecessary-ellipsis
 
     FORMAT: ClassVar[str]
 

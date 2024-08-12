@@ -2,7 +2,6 @@
 This module is used as a "whitelist" for "vulture". It serves no "application
 logic" purpose. See the "vulture" docs on more details on this.
 """
-# pylint: disable=pointless-statement, invalid-name
 
 from clproc import cli, model
 

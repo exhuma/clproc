@@ -2,6 +2,7 @@
 This module defines a renderer to convert a changelog object into a markdown
 document.
 """
+
 from datetime import date
 from io import StringIO
 from textwrap import indent, wrap
@@ -130,8 +131,6 @@ class MarkdownRenderer:
     """
     Renders a changelog instance as markdown
     """
-
-    # pylint: disable=too-few-public-methods
 
     FORMAT: ClassVar[str] = "markdown"
 

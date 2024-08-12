@@ -8,10 +8,19 @@ version = "2024.02.08"
 authors = [
   { name="Michel Albert", email="michel.albert@post.lu" },
 ]
-description = "Process a changelog.in file into various outputs"
+description = "Generate curated changelogs into various formats."
 readme = "README.rst"
 license = { text="MIT License" }
 requires-python = ">=3.7"
+keywords = [
+    "changelog",
+    "documentation",
+    "json",
+    "markdown",
+    "pre-commit",
+    "release notes",
+    "yaml",
+]
 dependencies = [
     "packaging",
     "python-dateutil",
@@ -19,7 +28,14 @@ dependencies = [
     "tomli",
 ]
 classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Utilities",
 ]
 
 [project.scripts]
@@ -41,24 +57,18 @@ dev = [
 ]
 
 [project.urls]
-"Repository" = "https://github.com/post-luxembourg/clproc"
+"Source" = "https://github.com/post-luxembourg/clproc"
+"Issues" = "https://github.com/post-luxembourg/clproc/issues"
+
 
 [tool.black]
-line_length = 80
+line-length = 80
 
 [tool.isort]
 line_length = 80
 force_grid_wrap = 0
 virtual_env = "env"
 profile = "black"
-
-[tool.pylint.basic]
-good-names = ["i", "j", "k", "ex", "Run", "_", "id", "ip"]
-
-[tool.pylint.format]
-max-line-length = "80"
-# Ignore RST external links (f.ex.: ".. _thelink: https://example.com")
-ignore-long-lines = '^\s*(\.\. _\w+: )?https?://.*'
 
 [tool.coverage.run]
 relative_files = true
@@ -76,13 +86,6 @@ sort = "-cover"
 
 [tool.coverage.html]
 show_contexts = true
-
-[tool.pyright]
-# strict = ["clproc"]
-exclude = ["fabfile.py", "env"]
-ignore = ["tests"]
-venvPath = "."
-venv = "env"
 
 [tool.mypy]
 strict = true

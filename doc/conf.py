@@ -1,4 +1,3 @@
-# pylint: skip-file
 from sphinx.application import Sphinx
 
 import clproc
