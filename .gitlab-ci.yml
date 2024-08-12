@@ -171,8 +171,8 @@ typecheck:
     - python -m venv env
     - source env/bin/activate
     - *install-pkg
-    - pip install "pyright!=1.1.309"
-    - pyright ${SRC_ROOT}
+    - pip install mypy
+    - mypy ${SRC_ROOT}
   rules:
     - if: $CI_COMMIT_TAG
       when: never

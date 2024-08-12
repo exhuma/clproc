@@ -49,6 +49,7 @@ test = [
 ]
 dev = [
     "furo",
+    "mypy",
     "myst-parser",
     "sphinx",
     "sphinx-rtd-theme",
