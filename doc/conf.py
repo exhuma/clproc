@@ -1,11 +1,13 @@
 # pylint: skip-file
+from sphinx.application import Sphinx
+
 import clproc
 
 extensions = [
+    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
-    "recommonmark",
 ]
 
 templates_path = ["_templates"]
@@ -18,7 +20,7 @@ version = clproc.__version__
 release = clproc.__exact_version__
 exclude_patterns = ["_build"]
 pygments_style = "sphinx"
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 todo_include_todos = False
 html_static_path = ["_static"]
 htmlhelp_basename = "clprocdoc"
@@ -37,3 +39,12 @@ latex_documents = [
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
+
+
+def setup(app: Sphinx) -> None:
+    """
+    Auto generate the API docs with spinx-apidoc
+    """
+    from sphinx.ext.apidoc import main
+
+    main(["--separate", "--output-dir", "doc/api", "--force", "src/clproc"])

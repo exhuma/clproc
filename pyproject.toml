@@ -32,7 +32,8 @@ test = [
     "pytest-coverage",
 ]
 dev = [
-    "recommonmark",
+    "furo",
+    "myst-parser",
     "sphinx",
     "sphinx-rtd-theme",
     "types-PyYAML",

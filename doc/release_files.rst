@@ -1,3 +1,5 @@
+.. _release-files:
+
 Release Files
 =============
 
