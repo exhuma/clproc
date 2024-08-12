@@ -11,6 +11,7 @@
 
 # version   ; type    ; subject                                                           ; issues  ;i;h;detail
 #--------------------------------------------------------------------------------------------------------------------------
+2024.08.12  ; support ; First public release                                              ;         ; ; ;
 2024.02.08  ; support ; Switch to calendar-versioning                                     ;         ; ; ;
 1.3.1.post1 ; changed ; Update fabfile                                                    ;         ; ; ;
 1.3.1       ; fixed   ; Don't crash if the release-info file does not exist               ;         ; ; ;
