@@ -215,10 +215,8 @@ upload:
   script:
     - "git remote add github https://${GITHUB_ACCESS_TOKEN}@github.com/\
        post-luxembourg/clproc.git"
-    - git checkout master
-    - git push github master
+    - "git checkout ${CI_COMMIT_BRANCH}"
+    - "git push github ${CI_COMMIT_BRANCH}"
   rules:
-    - if: "\
-        $CI_COMMIT_REF_PROTECTED == 'true' &&
-        $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+    - if: "$CI_COMMIT_REF_PROTECTED == 'true'"
       when: on_success
