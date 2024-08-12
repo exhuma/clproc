@@ -18,9 +18,20 @@ def discover_version() -> str:
     handlers: Dict[str, Callable[[IO[bytes]], str]] = {
         "pyproject.toml": from_pyproject,
         "package.json": from_package_json,
+        "cargo.toml": from_cargo_toml,
     }
     with open(filename, mode="rb") as fptr:
         return handlers[filename](fptr)
+
+
+def from_cargo_toml(data: IO[bytes]) -> str:
+    """
+    Discover the version from a cargo.toml file.
+
+    :param data: A file handle to the metadata file.
+    """
+    metadata = tomli.load(data)  # type: ignore
+    return metadata["package"]["version"]  # type: ignore
 
 
 def from_pyproject(data: IO[bytes]) -> str:

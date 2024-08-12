@@ -21,6 +21,13 @@ FAKE_TOML = dedent(
     """
 )
 
+FAKE_CARGO_TOML = dedent(
+    """\
+    [package]
+    version = "1.1.0"
+    """
+)
+
 
 def test_discover_pyproject():
     """
@@ -40,11 +47,21 @@ def test_discover_npm():
     assert result == "1.1.0"
 
 
+def test_discover_cargo_toml():
+    """
+    Ensure that we can extract the version from a cargo.toml file
+    """
+    contents = BytesIO(FAKE_CARGO_TOML.encode("utf8"))
+    result = discovery.from_cargo_toml(contents)
+    assert result == "1.1.0"
+
+
 @pytest.mark.parametrize(
     "filename, handler_name",
     [
         ("package.json", "from_package_json"),
         ("pyproject.toml", "from_pyproject"),
+        ("cargo.toml", "from_cargo_toml"),
     ],
 )
 def test_discover_delegation(filename: str, handler_name: str):
