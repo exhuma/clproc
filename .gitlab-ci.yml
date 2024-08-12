@@ -174,8 +174,6 @@ typecheck:
     - pip install mypy
     - mypy ${SRC_ROOT}
   rules:
-    - if: $CI_COMMIT_TAG
-      when: never
     - when: on_success
 
 unit-tests:
@@ -217,6 +215,9 @@ upload:
        post-luxembourg/clproc.git"
     - "git checkout ${CI_COMMIT_BRANCH}"
     - "git push github ${CI_COMMIT_BRANCH}"
+    - "git push github --tags"
   rules:
     - if: "$CI_COMMIT_REF_PROTECTED == 'true'"
+      when: on_success
+    - if: $CI_COMMIT_TAG
       when: on_success

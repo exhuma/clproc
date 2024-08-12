@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "clproc"
-version = "2024.02.08"
+version = "2024.08.12"
 authors = [
   { name="Michel Albert", email="michel.albert@post.lu" },
 ]
