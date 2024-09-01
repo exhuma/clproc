@@ -90,3 +90,8 @@ show_contexts = true
 
 [tool.mypy]
 strict = true
+exclude = [
+    "env",
+    "tests",
+    "doc"
+]
