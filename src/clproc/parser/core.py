@@ -306,7 +306,7 @@ def extract_metadata(
 def with_release_information(
     releases: Iterable[ReleaseEntry],
     additional_data: Dict[Version, ReleaseInformation],
-) -> Iterable[ReleaseEntry]:
+) -> Generator[ReleaseEntry, None, None]:
     """
     Augment the relase-entries with additional information from the "release
     file".
