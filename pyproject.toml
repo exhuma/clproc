@@ -48,13 +48,15 @@ test = [
     "pytest-coverage",
 ]
 dev = [
-    "furo",
     "mypy",
     "myst-parser",
-    "sphinx",
-    "sphinx-rtd-theme",
     "types-PyYAML",
     "types-python-dateutil",
+]
+doc = [
+    "furo",
+    "sphinx",
+    "sphinx-rtd-theme",
 ]
 
 [project.urls]
