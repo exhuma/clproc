@@ -53,6 +53,23 @@ def add_check_args(parser: ArgumentParser) -> None:
         ),
     )
 
+def add_format_args(parser: ArgumentParser) -> None:
+    parser.add_argument(
+        "--backup",
+        "-b",
+        action="store_true",
+        help="Keep a backup file.",
+        default=False
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        default="",
+        help=(
+            "Destination file. By default it writes back to the same file. "
+            "Use '-' to write to stdout"
+        )
+    )
 
 def parse_args(args: Optional[Sequence[str]] = None) -> Namespace:
     """
@@ -118,6 +135,13 @@ def parse_args(args: Optional[Sequence[str]] = None) -> Namespace:
     add_check_args(autocheck_parser)
     autocheck_parser.set_defaults(func=execute_autocheck)
 
+    format_parser = subp.add_parser(
+        "format",
+        help="Automatically format the '.in' file"
+    )
+    add_format_args(format_parser)
+    format_parser.set_defaults(func=execute_format)
+
     output = parser.parse_args(args)
     if not hasattr(output, "func"):
         parser.error("Missing subcommand")
@@ -178,6 +202,21 @@ def execute_autocheck(namespace: Namespace) -> int:
     LOG.info("Checking %s", abspath(namespace.infile.name))
     expected_version = Version(discover_version())
     return _execute_check_internal(namespace, expected_version)
+
+def execute_format(namespace: Namespace) -> int:
+    """
+    Main entry-point for the "format" subcommand.
+
+    :param namespace: The argparse namespace.
+    :returns: A valid posix exit-code
+    """
+    LOG.info("Formatting %s", abspath(namespace.infile.name))
+    core.format(
+        infile=namespace.infile,
+        output=namespace.output,
+        backup=namespace.backup
+    )
+    return 0
 
 
 def _execute_check_internal(

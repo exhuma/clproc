@@ -11,13 +11,18 @@ from clproc.model import Changelog, FileMetadata
 
 from .json import JSONRenderer
 from .markdown import MarkdownRenderer
+from .changelog_template import TemplateRenderer
 
 
 def create(format_: str) -> Optional["Renderer"]:
     """
     Instantiates the appropriate renderer
     """
-    renderers: List[Type[Renderer]] = [JSONRenderer, MarkdownRenderer]
+    renderers: List[Type[Renderer]] = [
+        JSONRenderer,
+        MarkdownRenderer,
+        TemplateRenderer,
+    ]
     for cls in renderers:
         if cls.FORMAT == format_:
             return cls()

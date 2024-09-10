@@ -5,6 +5,7 @@ import logging
 from typing import List, TextIO
 
 from packaging.version import Version
+from io import StringIO
 
 from clproc import parser
 from clproc.model import ParsingIssueMessage
@@ -39,6 +40,9 @@ def make_changelog(
 
     return renderer.render(data.changelog, data.file_metadata)
 
+def format_changelog(infile: TextIO) -> TextIO:
+    return StringIO(make_changelog("changelog-template", infile))
+
 
 def check_changelog(
     expected_version: Version,
@@ -72,3 +76,11 @@ def check_changelog(
             release.version for release in changelog.releases if release.version
         }
     return expected_version in candidates
+
+
+def format(infile: TextIO, output: TextIO, backup: bool=False) ->bool:
+    parse_issues: List[ParsingIssueMessage] = []
+    data = parser.parse(infile, parse_issue_handler=parse_issues.append)
+    if parse_issues:
+        return False
+    return True
