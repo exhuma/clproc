@@ -27,6 +27,8 @@ version
 type
     A changelog type following "Keep a Changelog"
 
+    .. todo:: Mention "unreleased"
+
 subject
     A short one-line description of the change (details can be added in the last
     column)
