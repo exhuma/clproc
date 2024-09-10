@@ -192,7 +192,7 @@ class Changelog:
     The top-level changelog object. It wraps all "releases" of the parsed data.
     """
 
-    releases: Tuple[ReleaseEntry, ...] = tuple()
+    releases: Tuple[ReleaseEntry, ...] = field(default_factory=tuple)
 
 
 @dataclass(frozen=True)
