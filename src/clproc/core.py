@@ -20,8 +20,14 @@ def make_changelog(
     num_releases: int = 0,
 ) -> str:
     """
-    Converts a ``changelog.in`` file into both a JSON and Mardown version of
-    the changelog.
+    Converts a ``changelog.in`` file into a plain-text document.
+
+    :param fmt: The type of document that should be created
+    :param infile: A file-like object that contains the contents of the
+        ``changelog.in`` file.
+    :param num_releases: The amount of releases that should be rendered
+        (0=unlimited).
+    :returns: The generated document
     """
     LOG.info("Generating %s changelog from %r", fmt, infile.name)
 
