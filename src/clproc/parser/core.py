@@ -28,6 +28,8 @@ from packaging.version import InvalidVersion, Version
 from clproc.exc import ChangelogFormatError
 from clproc.model import (
     ChangelogEntry,
+    ChangelogRow,
+    RowType,
     ChangelogType,
     FileMetadata,
     FileMetadataField,
@@ -175,7 +177,7 @@ def changelogrows(
     changelog_file: TextIO,
     changelog_version: Version,
     parsing_issue_handler: TParseIssueHandler,
-) -> Generator[ChangelogEntry, None, None]:
+) -> Generator[ChangelogRow, None, None]:
     """
     Read *changelog_file* and generate "changelog entries" as they are
     encoutered.
@@ -187,15 +189,22 @@ def changelogrows(
     for lineno, row in enumerate(propagate_first_col(reader), 1):
         # skip empty lines
         if not row:
+            yield ChangelogRow(RowType.EMPTY)
             continue
 
         # Allow a sharp as comment line
         # (= whenever the value in the first column starts with a '#')
         if row[0].strip().startswith("#"):
+            # TODO: Using row[0] here is buggy. We need access to the "raw"
+            # line
+            yield ChangelogRow(RowType.COMMENT, raw_line=row[0])
             continue
 
         # Allow for unreleased entries
         if row[0].strip() == "unreleased":
+            # TODO: Using row[0] here is buggy. We need access to the "raw"
+            # line
+            yield ChangelogRow(RowType.EXCLUDED, raw_line=row[0])
             continue
 
         try:
@@ -206,7 +215,7 @@ def changelogrows(
             )
             continue
 
-        yield entry
+        yield ChangelogRow(RowType.LOG, entry)
 
 
 def aggregate_releases(
@@ -236,8 +245,10 @@ def aggregate_releases(
     for entry in changelogrows(
         changelog_file, file_metadata.version, parse_issue_handler
     ):
+        if not entry.parsed_content:
+            continue
         release_version = make_release_version(
-            entry.version, file_metadata.release_nodes
+            entry.parsed_content.version, file_metadata.release_nodes
         )
         if last_seen_release and last_seen_release != release_version:
             yield ReleaseEntry(last_seen_release, None, "", tuple(logs))
@@ -245,7 +256,7 @@ def aggregate_releases(
             if emitted_releases == num_releases:
                 return
             logs.clear()
-        logs.append(entry)
+        logs.append(entry.parsed_content)
         last_seen_release = release_version
 
     if logs:

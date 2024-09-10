@@ -51,6 +51,11 @@ class ParsingIssueMessage(NamedTuple):
 TParseIssueHandler = Callable[[ParsingIssueMessage], None]
 "A type-alias for a callable that handles parsing issues"
 
+class RowType(Enum):
+    EMPTY = 'empty'
+    COMMENT = 'comment'
+    LOG = 'log'
+    EXCLUDED = 'excluded'
 
 @dataclass(frozen=True)
 class FileMetadata:
@@ -134,6 +139,12 @@ class ChangelogEntry:
     An optional multiline block of text to further explain what the change is
     all about.
     """
+
+@dataclass(frozen=True)
+class ChangelogRow:
+    type: RowType
+    parsed_content: Optional[ChangelogEntry] = None
+    raw_line: str = ''
 
 
 @dataclass(frozen=True)
