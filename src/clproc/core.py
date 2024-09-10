@@ -34,7 +34,7 @@ def make_changelog(
     data = parser.parse(infile, num_releases)
     renderer = create(fmt)
     if not renderer:
-        LOG.error("No renderer found for %s", fmt)
+        LOG.error("No renderer found for %r", fmt)
         return ""
 
     return renderer.render(data.changelog, data.file_metadata)
