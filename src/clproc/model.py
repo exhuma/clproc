@@ -57,6 +57,16 @@ class RowType(Enum):
     LOG = 'log'
     EXCLUDED = 'excluded'
 
+
+class CsvColumns(NamedTuple):
+    version_raw: str
+    type: str
+    subject: str
+    issue_ids_raw: str = ""
+    internal: str = ""
+    highlight: str = ""
+    detail: str = ""
+
 @dataclass(frozen=True)
 class FileMetadata:
     """

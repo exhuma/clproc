@@ -31,6 +31,7 @@ from clproc.model import (
     ChangelogRow,
     RowType,
     ChangelogType,
+    CsvColumns,
     FileMetadata,
     FileMetadataField,
     IssueId,
@@ -79,7 +80,7 @@ def parse_issue_ids(raw_text: str) -> Iterable[IssueId]:
             yield IssueId(int(lhs.strip()))
 
 
-def cleanup(row: List[str], changelog_version: Version) -> ChangelogEntry:
+def cleanup(row: CsvColumns, changelog_version: Version) -> ChangelogEntry:
     """
     Cleanup values from the changelog rows and convert them to proper
     Python types.
