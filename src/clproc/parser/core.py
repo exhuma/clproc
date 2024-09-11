@@ -57,6 +57,20 @@ def _make_url_template(value: str) -> Tuple[str, str]:
     return "default", lhs.strip()
 
 
+# Mapping from keyname as used in the file-content to the argument name of
+# the FileMetadata object. With a callable that converts the value from
+# string to the proper type.
+META_PARSER: Mapping[FileMetadataField, Tuple[str, Callable[[str], Any]]] = {
+    FileMetadataField.CHANGELOG_VERSION: ("version", Version),
+    FileMetadataField.RELEASE_NODES: ("release_nodes", int),
+    FileMetadataField.ISSUE_URL_TEMPLATE: (
+        "issue_url_template",
+        _make_url_template,
+    ),
+    FileMetadataField.RELEASE_FILE: ("release_file", str.strip),
+}
+
+
 def parse_issue_ids(raw_text: str) -> Iterable[IssueId]:
     """
     Process issue IDs providing both the "source identifier" and the real
@@ -278,24 +292,12 @@ def extract_metadata(
     """
     initial_position = infile.tell()
     kwargs: dict[str, Any] = {}
-    # Mapping from keyname as used in the file-content to the argument name of
-    # the FileMetadata object. With a callable that converts the value from
-    # string to the proper type.
-    keydef: Mapping[FileMetadataField, Tuple[str, Callable[[str], Any]]] = {
-        FileMetadataField.CHANGELOG_VERSION: ("version", Version),
-        FileMetadataField.RELEASE_NODES: ("release_nodes", int),
-        FileMetadataField.ISSUE_URL_TEMPLATE: (
-            "issue_url_template",
-            _make_url_template,
-        ),
-        FileMetadataField.RELEASE_FILE: ("release_file", str.strip),
-    }
     try:
         for line in infile:
             matches = dict(P_FILE_OPTION.findall(line))
             if not matches:
                 continue
-            for field, (meta_kwarg, converter) in keydef.items():
+            for field, (meta_kwarg, converter) in META_PARSER.items():
                 if field.value in matches:
                     if field == FileMetadataField.ISSUE_URL_TEMPLATE:
                         container = kwargs.setdefault("issue_url_templates", {})
