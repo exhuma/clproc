@@ -222,9 +222,19 @@ def changelogrows(
             yield ChangelogRow(RowType.EXCLUDED, raw_line=row[0])
             continue
 
+        # Allow for "release" entries from legacy changelog type
+        if len(row) >= 2 and row[1].strip() == "release":
+            # TODO: Using row[0] here is buggy. We need access to the "raw"
+            # line
+            yield ChangelogRow(RowType.RELEASE, raw_line=row[0])
+            continue
+
         try:
             entry = cleanup(row, changelog_version)
         except ChangelogFormatError as exc:
+            # TODO: Using row[0] here is buggy. We need access to the "raw"
+            # line
+            yield ChangelogRow(RowType.UNPARSED, raw_line=row[0])
             parsing_issue_handler(
                 ParsingIssueMessage(logging.WARNING, f"Line #{lineno}: {exc}")
             )

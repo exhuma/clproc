@@ -56,6 +56,8 @@ class RowType(Enum):
     COMMENT = 'comment'
     LOG = 'log'
     EXCLUDED = 'excluded'
+    UNPARSED = 'unparsed'
+    RELEASE = 'release'
 
 
 class CsvColumns(NamedTuple):
