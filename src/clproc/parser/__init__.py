@@ -34,20 +34,18 @@ def parse(
     """
     file_metadata = extract_metadata(infile, parse_issue_handler)
     if file_metadata.version == Version("1.0"):
-        return ParseResult(
-            v1.parse(infile, file_metadata, num_releases, parse_issue_handler),
-            file_metadata,
+        result = v1.parse(
+            infile, file_metadata, num_releases, parse_issue_handler
         )
+        return ParseResult(result, file_metadata)
     if file_metadata.version == Version("2.0"):
-        return ParseResult(
-            v2.parse(
-                infile,
-                file_metadata,
-                num_releases,
-                parse_issue_handler,
-            ),
+        result = v2.parse(
+            infile,
             file_metadata,
+            num_releases,
+            parse_issue_handler,
         )
+        return ParseResult(result, file_metadata)
     raise ClprocException(
         f"Unsupported infile version: {file_metadata.version}"
     )

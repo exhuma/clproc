@@ -29,7 +29,6 @@ from clproc.exc import ChangelogFormatError
 from clproc.model import (
     ChangelogEntry,
     ChangelogRow,
-    RowType,
     ChangelogType,
     CsvColumns,
     FileMetadata,
@@ -38,6 +37,7 @@ from clproc.model import (
     ParsingIssueMessage,
     ReleaseEntry,
     ReleaseInformation,
+    RowType,
     TParseIssueHandler,
 )
 from clproc.reporting import default_parse_issue_handler

@@ -4,7 +4,15 @@ This module contains the data-model used across clproc
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum
-from typing import Callable, Dict, FrozenSet, NamedTuple, Optional, Tuple
+from typing import (
+    Callable,
+    Dict,
+    FrozenSet,
+    List,
+    NamedTuple,
+    Optional,
+    Tuple,
+)
 
 from packaging.version import Version
 
@@ -51,13 +59,14 @@ class ParsingIssueMessage(NamedTuple):
 TParseIssueHandler = Callable[[ParsingIssueMessage], None]
 "A type-alias for a callable that handles parsing issues"
 
+
 class RowType(Enum):
-    EMPTY = 'empty'
-    COMMENT = 'comment'
-    LOG = 'log'
-    EXCLUDED = 'excluded'
-    UNPARSED = 'unparsed'
-    RELEASE = 'release'
+    EMPTY = "empty"
+    COMMENT = "comment"
+    LOG = "log"
+    EXCLUDED = "excluded"
+    UNPARSED = "unparsed"
+    RELEASE = "release"
 
 
 class CsvColumns(NamedTuple):
@@ -68,6 +77,7 @@ class CsvColumns(NamedTuple):
     internal: str = ""
     highlight: str = ""
     detail: str = ""
+
 
 @dataclass(frozen=True)
 class FileMetadata:
@@ -152,11 +162,12 @@ class ChangelogEntry:
     all about.
     """
 
+
 @dataclass(frozen=True)
 class ChangelogRow:
     type: RowType
     parsed_content: Optional[ChangelogEntry] = None
-    raw_line: str = ''
+    raw_line: str = ""
 
 
 @dataclass(frozen=True)

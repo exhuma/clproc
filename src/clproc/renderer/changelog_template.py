@@ -5,8 +5,6 @@ object into a changelog-template (a "changelog.in") file.
 The generated file will be sorted and aligned. This renderer was originally
 created to auto-format "changelog.in" file.
 """
-import json
-from datetime import date
 from typing import Any, ClassVar, Dict, Iterable, List
 
 from packaging.version import Version
@@ -14,7 +12,6 @@ from packaging.version import Version
 from clproc.model import (
     Changelog,
     ChangelogEntry,
-    ChangelogType,
     FileMetadata,
     IssueId,
 )

@@ -9,9 +9,9 @@ from typing import ClassVar, List, Optional, Protocol, Type
 
 from clproc.model import Changelog, FileMetadata
 
+from .changelog_template import TemplateRenderer
 from .json import JSONRenderer
 from .markdown import MarkdownRenderer
-from .changelog_template import TemplateRenderer
 
 
 def create(format_: str) -> Optional["Renderer"]:

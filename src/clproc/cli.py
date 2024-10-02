@@ -53,13 +53,14 @@ def add_check_args(parser: ArgumentParser) -> None:
         ),
     )
 
+
 def add_format_args(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--backup",
         "-b",
         action="store_true",
         help="Keep a backup file.",
-        default=False
+        default=False,
     )
     parser.add_argument(
         "--output",
@@ -68,8 +69,9 @@ def add_format_args(parser: ArgumentParser) -> None:
         help=(
             "Destination file. By default it writes back to the same file. "
             "Use '-' to write to stdout"
-        )
+        ),
     )
+
 
 def parse_args(args: Optional[Sequence[str]] = None) -> Namespace:
     """
@@ -136,8 +138,7 @@ def parse_args(args: Optional[Sequence[str]] = None) -> Namespace:
     autocheck_parser.set_defaults(func=execute_autocheck)
 
     format_parser = subp.add_parser(
-        "format",
-        help="Automatically format the '.in' file"
+        "format", help="Automatically format the '.in' file"
     )
     add_format_args(format_parser)
     format_parser.set_defaults(func=execute_format)
@@ -203,6 +204,7 @@ def execute_autocheck(namespace: Namespace) -> int:
     expected_version = Version(discover_version())
     return _execute_check_internal(namespace, expected_version)
 
+
 def execute_format(namespace: Namespace) -> int:
     """
     Main entry-point for the "format" subcommand.
@@ -214,7 +216,7 @@ def execute_format(namespace: Namespace) -> int:
     core.format(
         infile=namespace.infile,
         output=namespace.output,
-        backup=namespace.backup
+        backup=namespace.backup,
     )
     return 0
 

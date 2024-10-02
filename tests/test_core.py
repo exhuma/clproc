@@ -1,6 +1,7 @@
 """
 Unit Tests for the core/business functionality of clproc
 """
+
 import logging
 from io import StringIO
 from typing import Any
