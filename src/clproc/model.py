@@ -4,15 +4,7 @@ This module contains the data-model used across clproc
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum
-from typing import (
-    Callable,
-    Dict,
-    FrozenSet,
-    List,
-    NamedTuple,
-    Optional,
-    Tuple,
-)
+from typing import Callable, Dict, FrozenSet, NamedTuple, Optional, Tuple
 
 from packaging.version import Version
 

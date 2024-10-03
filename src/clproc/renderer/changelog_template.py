@@ -9,12 +9,7 @@ from typing import Any, ClassVar, Dict, Iterable, List
 
 from packaging.version import Version
 
-from clproc.model import (
-    Changelog,
-    ChangelogEntry,
-    FileMetadata,
-    IssueId,
-)
+from clproc.model import Changelog, ChangelogEntry, FileMetadata, IssueId
 
 
 def _issue_id_sort_key(item: IssueId) -> Any:

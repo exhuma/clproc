@@ -1,11 +1,12 @@
 """
 Test core behaviour of changelog processing
 """
-
+import csv
 from datetime import date
 from io import StringIO
 from pathlib import Path
 from textwrap import dedent
+from types import NoneType
 
 import pytest
 from packaging.version import Version
@@ -18,6 +19,7 @@ from clproc.model import (
     IssueId,
     ReleaseEntry,
     ReleaseInformation,
+    RowType,
 )
 from clproc.parser import core
 
@@ -209,3 +211,68 @@ def test_with_release_information(
     result = list(with_info)
     assert result[0].release_date == expected_date
     assert result[0].notes == expected_notes
+
+
+@pytest.mark.parametrize("cl_version", [Version("1.0"), Version("2.0")])
+def test_inclusion_of_passive_lines(cl_version: Version) -> None:
+    """
+    The parser should include comments and empty lines from the source file.
+
+    These may be useful for renderers and/or other tooling.
+    """
+    data = StringIO(
+        dedent(
+            """\
+            version; type    ; message
+            # This is a comment
+
+            2.1.0  ; release ; 2018-01-01;"Hello World
+            Second-Release-Line"
+            2.1.0  ; added   ; hello world   ;    ; ;h;          ;"multiline
+            string"
+            2.1.0  ; added   ; hello world   ;    ; ;h;          ;
+
+                ; support ; goodbye world ;    ; ; ;2010-01-01;
+
+            # And another comment
+            """
+        )
+    )
+    result = list(core.changelogrows(data, cl_version, lambda _: None))
+    expected = [
+        (RowType.UNPARSED, NoneType, "version; type    ; message"),
+        (RowType.COMMENT, NoneType, "# This is a comment"),
+        (RowType.EMPTY, NoneType, ""),
+        (
+            RowType.RELEASE,
+            NoneType,
+            (
+                '2.1.0  ; release ; 2018-01-01;"Hello World\nSecond-Release-Line"'
+            ),
+        ),
+        (RowType.LOG, ChangelogEntry, ""),
+        (RowType.LOG, ChangelogEntry, ""),
+        (RowType.EMPTY, NoneType, ""),
+        (RowType.LOG, ChangelogEntry, ""),
+        (RowType.EMPTY, NoneType, ""),
+        (RowType.COMMENT, NoneType, "# And another comment"),
+    ]
+    simplified_for_test = [
+        (line.type, type(line.parsed_content), line.raw_line) for line in result
+    ]
+    assert simplified_for_test == expected
+
+
+@pytest.mark.parametrize(
+    "row, expected",
+    [
+        ([], ""),
+        (["foo", "bar"], "foo,bar"),
+        (["foo", "bar\nbaz"], 'foo,"bar\nbaz"'),
+    ],
+)
+def test_unparse(row, expected):
+    dummy_file = StringIO()
+    reader = csv.reader(dummy_file, delimiter=",", quotechar='"')
+    result = core.unparse(row, reader.dialect)
+    assert result == expected

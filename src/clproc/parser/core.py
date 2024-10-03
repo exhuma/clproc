@@ -10,6 +10,7 @@ import csv
 import logging
 import re
 from dataclasses import replace
+from io import StringIO
 from typing import (
     Any,
     Callable,
@@ -188,6 +189,23 @@ def propagate_first_col(
             yield row
 
 
+def unparse(row: Iterable[str], dialect: csv.Dialect) -> str:
+    """
+    Reverse parsing of a CSV-line
+
+    :param row: An iterable over column values
+    :param dialect: The CSV dialect to use. Tip: Pass in
+        ``your_reader.dialect`` to ensure the data remains interchangable
+    """
+    # This uses a Python csv-writer instance to make sure we handle newlines
+    # and quoting correctly. Using a "writer" is necessary because the
+    # "csv.reader" does not make the original data available during iteration.
+    io = StringIO()
+    dummy_writer = csv.writer(io, dialect=dialect)
+    dummy_writer.writerow(row)
+    return io.getvalue().strip()
+
+
 def changelogrows(
     changelog_file: TextIO,
     changelog_version: Version,
@@ -210,31 +228,28 @@ def changelogrows(
         # Allow a sharp as comment line
         # (= whenever the value in the first column starts with a '#')
         if row[0].strip().startswith("#"):
-            # TODO: Using row[0] here is buggy. We need access to the "raw"
-            # line
-            yield ChangelogRow(RowType.COMMENT, raw_line=row[0])
+            raw_line = unparse(row, reader.dialect)
+            yield ChangelogRow(RowType.COMMENT, raw_line=raw_line)
             continue
 
         # Allow for unreleased entries
         if row[0].strip() == "unreleased":
-            # TODO: Using row[0] here is buggy. We need access to the "raw"
-            # line
-            yield ChangelogRow(RowType.EXCLUDED, raw_line=row[0])
+            raw_line = unparse(row, reader.dialect)
+            yield ChangelogRow(RowType.EXCLUDED, raw_line=raw_line)
             continue
 
         # Allow for "release" entries from legacy changelog type
         if len(row) >= 2 and row[1].strip() == "release":
-            # TODO: Using row[0] here is buggy. We need access to the "raw"
-            # line
-            yield ChangelogRow(RowType.RELEASE, raw_line=row[0])
+            raw_line = unparse(row, reader.dialect)
+            yield ChangelogRow(RowType.RELEASE, raw_line=raw_line)
             continue
 
         try:
             entry = cleanup(row, changelog_version)
         except ChangelogFormatError as exc:
-            # TODO: Using row[0] here is buggy. We need access to the "raw"
-            # line
-            yield ChangelogRow(RowType.UNPARSED, raw_line=row[0])
+            yield ChangelogRow(
+                RowType.UNPARSED, raw_line=unparse(row, reader.dialect)
+            )
             parsing_issue_handler(
                 ParsingIssueMessage(logging.WARNING, f"Line #{lineno}: {exc}")
             )
