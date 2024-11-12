@@ -5,7 +5,9 @@ object into a changelog-template (a "changelog.in") file.
 The generated file will be sorted and aligned. This renderer was originally
 created to auto-format "changelog.in" file.
 """
+
 from typing import Any, ClassVar, Dict, Iterable, List
+from itertools import zip_longest
 
 from packaging.version import Version
 
@@ -81,6 +83,24 @@ def padded(data: List[List[str]], *, inner="") -> List[List[str]]:
         + [f"{inner}{value}{inner}" for value in inner_values]
         + [f"{inner}{last}"]
     )
+
+
+def aligned(data: List[List[str]]) -> List[List[str]]:
+    column_widths = [0] * len(data[0])
+    for row in data:
+        for idx, cell in enumerate(row):
+            if idx == len(column_widths):
+                column_widths.append(len(cell))
+            else:
+                column_widths[idx] = max(len(cell), column_widths[idx])
+    output = []
+    for row in data:
+        aligned_cells = [
+            ("%%-%ds" % width) % value
+            for value, width in zip_longest(row, column_widths, fillvalue="")
+        ]
+        output.append(aligned_cells)
+    return output
 
 
 class TemplateRenderer:
