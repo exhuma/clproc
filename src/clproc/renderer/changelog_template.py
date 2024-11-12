@@ -62,6 +62,27 @@ def format_log(
     }
 
 
+def padded(data: List[List[str]], *, inner="") -> List[List[str]]:
+    """
+    Create a copy of *data* with included padding.
+
+    >>> padded(["a", "b", "c"], inner="---")
+    ["a--", "---b---", "---c"]
+
+    :param inner: The padding text that is added on the inside. The first and
+        last value in the list will only have it applied to the end/front
+        respectively.
+    """
+    first, *inner_values, last = data
+    return (
+        [
+            f"{first}{inner}",
+        ]
+        + [f"{inner}{value}{inner}" for value in inner_values]
+        + [f"{inner}{last}"]
+    )
+
+
 class TemplateRenderer:
     """
     Renders a changelog instance as ".in" file
