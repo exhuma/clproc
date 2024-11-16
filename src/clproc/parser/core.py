@@ -58,6 +58,19 @@ def _make_url_template(value: str) -> Tuple[str, str]:
     return "default", lhs.strip()
 
 
+class ClprocDialect(csv.excel):
+    """
+    A definition for the CSV settings used by clproc
+    """
+
+    delimiter = ";"
+    quotechar = '"'
+    lineterminator = "\n"
+
+
+csv.register_dialect("clproc", ClprocDialect)
+
+
 # Mapping from keyname as used in the file-content to the argument name of
 # the FileMetadata object. With a callable that converts the value from
 # string to the proper type.
@@ -218,7 +231,7 @@ def changelogrows(
     This takes care of cleanup and skipping wherever necessary. Each iteration
     on this generator contains a valid changelog item.
     """
-    reader = csv.reader(changelog_file, delimiter=";", quotechar='"')
+    reader = csv.reader(changelog_file, dialect="clproc")
     for lineno, row in enumerate(propagate_first_col(reader), 1):
         # skip empty lines
         if not row:
