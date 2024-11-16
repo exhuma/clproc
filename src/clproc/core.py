@@ -77,11 +77,3 @@ def check_changelog(
             release.version for release in changelog.releases if release.version
         }
     return expected_version in candidates
-
-
-def format(infile: TextIO, output: TextIO, backup: bool = False) -> bool:
-    parse_issues: List[ParsingIssueMessage] = []
-    data = parser.parse(infile, parse_issue_handler=parse_issues.append)
-    if parse_issues:
-        return False
-    return True

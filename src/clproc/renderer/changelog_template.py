@@ -8,6 +8,8 @@ created to auto-format "changelog.in" file.
 
 from typing import Any, ClassVar, Dict, Iterable, List
 from itertools import zip_longest
+from csv import writer
+from io import StringIO
 
 from packaging.version import Version
 
@@ -41,27 +43,19 @@ def format_issue_urls(
 
 def format_log(
     log: ChangelogEntry, issue_url_templates: Dict[str, str]
-) -> Dict[str, Any]:
+) -> List[str]:
     """
     Convert a changelog-entry to a JSONifiable structure.
     """
-    version = log.version or Version("0.0")
-    return {
-        "simple_version": (
-            version.major,
-            version.minor,
-        ),
-        "full_version": version.release,
-        "is_highlight": log.is_highlight,
-        "is_internal": log.is_internal,
-        "issue_urls": list(format_issue_urls(log, issue_url_templates)),
-        "detail": log.detail,
-        "issue_ids": [
-            item.id for item in sorted(log.issue_ids, key=_issue_id_sort_key)
-        ],
-        "subject": log.subject,
-        "type": log.type_,
-    }
+    column_values: List[str] = []
+    column_values.append(str(log.version))
+    column_values.append(log.type_.value)
+    column_values.append(log.subject)
+    column_values.append(",".join(sorted(log.issue_ids)))
+    column_values.append("i" if log.is_internal else " ")
+    column_values.append("h" if log.is_highlight else " ")
+    column_values.append(log.detail)
+    return column_values
 
 
 def padded(data: List[List[str]], *, inner="") -> List[List[str]]:
@@ -123,19 +117,25 @@ class TemplateRenderer:
         :param issue_url_template: A simple string which is used to generate
             links to issues. The string ``{id}`` is replaced with the issue-id.
         """
-        output: List[TemplateLine] = []
-        for release in changelog.releases:
-            logs: List[Dict[str, Any]] = []
-            for log in release.logs:
-                logs.append(format_log(log, file_metadata.issue_url_templates))
-            output.append(
-                {
-                    "logs": logs,
-                    "meta": {
-                        "date": release.release_date,
-                        "notes": release.notes,
-                        "version": release.version,
-                    },
-                }
-            )
-        return ""
+        logs: List[List[str]] = []
+        for release in sorted(
+            changelog.releases,
+            key=lambda release: release.version,
+            reverse=True,
+        ):
+            for log in sorted(
+                release.logs, reverse=True, key=lambda log: log.version
+            ):
+                logs.append(
+                    padded(
+                        format_log(log, file_metadata.issue_url_templates),
+                        inner=" ",
+                    )
+                )
+
+        logs = aligned(logs)
+        stream = StringIO()
+
+        csv = writer(stream, dialect="clproc")
+        csv.writerows(logs)
+        return stream.getvalue()

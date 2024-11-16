@@ -160,3 +160,38 @@ def test_make_unknown_renderer(caplog: Any) -> None:
     result = core.make_changelog("this-is-an-unknown-renderer", infile)
     assert any("this-is-an-unknown-renderer" in msg for msg in caplog.messages)
     assert result == ""
+
+
+def test_format() -> None:
+    """
+    Ensure that we can auto-format a ".in" file
+    """
+    data = StringIO(
+        "\n".join(
+            [
+                "",
+                "",
+                "# -*- changelog-version: 2.0 -*-",
+                "",
+                "fake-header",
+                "2.7.0 ;doc; foo ;;;;;",
+                "2.7.0 ;added; hello world ;;;x;;",
+                "",
+                "# comment",
+                "2.7.0 ;added; hello world 2 ;;;;i;",
+                "",
+                "",
+            ]
+        )
+    )
+    data.name = f"<stringio {__file__}>"
+    output = core.format_changelog(data).getvalue()
+    expected = "\n".join(
+        [
+            "2.7.0 ; doc   ; foo           ;;;   ;  ",
+            "2.7.0 ; added ; hello world   ;;; h ;  ",
+            "2.7.0 ; added ; hello world 2 ;;;   ; i",
+            "",
+        ]
+    )
+    assert output == expected
