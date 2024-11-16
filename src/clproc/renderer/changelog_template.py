@@ -78,10 +78,13 @@ def padded(data: List[List[str]], *, inner="") -> List[List[str]]:
     first, *inner_values, last = data
     return (
         [
-            f"{first}{inner}",
+            f"{first.strip()}{inner}" if first.strip() else "",
         ]
-        + [f"{inner}{value}{inner}" for value in inner_values]
-        + [f"{inner}{last}"]
+        + [
+            f"{inner}{value.strip()}{inner}" if value.strip() else ""
+            for value in inner_values
+        ]
+        + [f"{inner}{last.strip()}" if last.strip() else ""]
     )
 
 

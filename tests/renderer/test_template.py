@@ -49,6 +49,10 @@ def test_aligned_cells(values, expected):
     "values, expected",
     [
         (
+            ["", "foo", ""],
+            ["", " foo ", ""],
+        ),
+        (
             ["foo", "bar", "baz"],
             ["foo ", " bar ", " baz"],
         ),
