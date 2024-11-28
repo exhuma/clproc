@@ -7,7 +7,6 @@ created to auto-format "changelog.in" file.
 """
 
 from typing import Any, ClassVar, Dict, Iterable, List
-from itertools import zip_longest
 from csv import writer
 from io import StringIO
 
@@ -94,7 +93,7 @@ def aligned(data: List[List[str]]) -> List[List[str]]:
     for row in data:
         aligned_cells = [
             ("%%-%ds" % width) % value
-            for value, width in zip_longest(row, column_widths, fillvalue="")
+            for value, width in zip(row, column_widths)
         ]
         output.append(aligned_cells)
     return output

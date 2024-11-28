@@ -21,7 +21,7 @@ from clproc.renderer.changelog_template import aligned, padded
                 ["hello", "world", "john"],
             ],
             [
-                ["foo  ", "bar  ", "    "],
+                ["foo  ", "bar  "],
                 ["hello", "world", "john"],
             ],
         ),
@@ -32,7 +32,7 @@ from clproc.renderer.changelog_template import aligned, padded
             ],
             [
                 ["foo  ", "bar  ", "baz"],
-                ["hello", "world", "   "],
+                ["hello", "world"],
             ],
         ),
     ],
