@@ -20,6 +20,7 @@ from clproc.model import (
 )
 from clproc.parser.core import (
     aggregate_releases,
+    changelogrows,
     make_release_version,
     propagate_first_col,
     with_release_information,
@@ -109,8 +110,12 @@ def parse(
     finally:
         changelog_file.seek(file_position)
 
+    rows = changelogrows(
+        changelog_file, file_metadata.version, parse_issue_handler
+    )
+
     aggregated_releases = aggregate_releases(
-        changelog_file,
+        rows,
         file_metadata,
         num_releases,
         parse_issue_handler,

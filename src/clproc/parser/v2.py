@@ -18,7 +18,11 @@ from clproc.model import (
     ReleaseInformation,
     TParseIssueHandler,
 )
-from clproc.parser.core import aggregate_releases, with_release_information
+from clproc.parser.core import (
+    aggregate_releases,
+    with_release_information,
+    changelogrows,
+)
 from clproc.reporting import default_parse_issue_handler
 
 LOG = logging.getLogger(__name__)
@@ -98,8 +102,11 @@ def parse(
     else:
         release_information = {}
 
+    rows = changelogrows(
+        changelog_file, file_metadata.version, parse_issue_handler
+    )
     aggregated_releases = aggregate_releases(
-        changelog_file,
+        rows,
         file_metadata,
         num_releases,
         parse_issue_handler,

@@ -272,7 +272,7 @@ def changelogrows(
 
 
 def aggregate_releases(
-    changelog_file: TextIO,
+    rows: Iterable[ChangelogRow],
     file_metadata: FileMetadata = FileMetadata(),
     num_releases: int = 0,
     parse_issue_handler: TParseIssueHandler = default_parse_issue_handler,
@@ -295,9 +295,7 @@ def aggregate_releases(
     last_seen_release: Optional[Version] = None
     release_version: Optional[Version] = None
     emitted_releases = 0
-    for entry in changelogrows(
-        changelog_file, file_metadata.version, parse_issue_handler
-    ):
+    for entry in rows:
         if not entry.parsed_content:
             continue
         release_version = make_release_version(
