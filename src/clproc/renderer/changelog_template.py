@@ -9,10 +9,13 @@ created to auto-format "changelog.in" file.
 from typing import Any, ClassVar, Dict, Iterable, List
 from csv import writer
 from io import StringIO
+from itertools import zip_longest
 
 from packaging.version import Version
 
 from clproc.model import Changelog, ChangelogEntry, FileMetadata, IssueId
+
+MISSING = object()
 
 
 def _issue_id_sort_key(item: IssueId) -> Any:
@@ -88,12 +91,16 @@ def aligned(data: List[List[str]]) -> List[List[str]]:
             if idx == len(column_widths):
                 column_widths.append(len(cell))
             else:
-                column_widths[idx] = max(len(cell), column_widths[idx])
+                column_widths[idx] = max(
+                    len(cell) if cell != MISSING else 0, column_widths[idx]
+                )
     output = []
     for row in data:
         aligned_cells = [
-            ("%%-%ds" % width) % value
-            for value, width in zip(row, column_widths)
+            ("%%-%ds" % width) % value if value != MISSING else MISSING
+            for value, width in zip_longest(
+                row, column_widths, fillvalue=MISSING
+            )
         ]
         output.append(aligned_cells)
     return output
@@ -135,6 +142,19 @@ class TemplateRenderer:
         logs = aligned(logs)
         stream = StringIO()
 
-        csv = writer(stream, dialect="clproc")
+        csv = MyWriter(stream, dialect="clproc")
         csv.writerows(logs)
         return stream.getvalue()
+
+
+class MyWriter:
+    def __init__(self, stream, dialect):
+        self.writer = writer(stream, dialect=dialect)
+
+    def writerows(self, rows: Iterable[list[str]]) -> None:
+        for row in rows:
+            self.writerow(row)
+
+    def writerow(self, row: list[str]) -> None:
+        row = [cell for cell in row if cell != MISSING]
+        self.writer.writerow(row)

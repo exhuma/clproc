@@ -1,5 +1,5 @@
 import pytest
-from clproc.renderer.changelog_template import aligned, padded
+from clproc.renderer.changelog_template import aligned, padded, MISSING
 
 
 @pytest.mark.parametrize(
@@ -17,22 +17,22 @@ from clproc.renderer.changelog_template import aligned, padded
         ),
         (
             [
-                ["foo", "bar"],
+                ["foo", "bar", MISSING],
                 ["hello", "world", "john"],
             ],
             [
-                ["foo  ", "bar  "],
+                ["foo  ", "bar  ", MISSING],
                 ["hello", "world", "john"],
             ],
         ),
         (
             [
                 ["foo", "bar", "baz"],
-                ["hello", "world"],
+                ["hello", "world", MISSING],
             ],
             [
                 ["foo  ", "bar  ", "baz"],
-                ["hello", "world"],
+                ["hello", "world", MISSING],
             ],
         ),
     ],
