@@ -35,6 +35,18 @@ from clproc.renderer.changelog_template import aligned, padded, MISSING
                 ["hello", "world", MISSING],
             ],
         ),
+        (
+            [
+                ["# comment should not affect length"],
+                ["foo", "bar", "baz"],
+                ["hello", "world", MISSING],
+            ],
+            [
+                ["# comment should not affect length", MISSING, MISSING],
+                ["foo  ", "bar  ", "baz"],
+                ["hello", "world", MISSING],
+            ],
+        ),
     ],
 )
 def test_aligned_cells(values, expected):

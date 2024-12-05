@@ -87,6 +87,8 @@ def padded(data: List[List[str]], *, inner="") -> List[List[str]]:
 def aligned(data: List[List[str]]) -> List[List[str]]:
     column_widths = [0] * len(data[0])
     for row in data:
+        if row and row[0].lstrip().startswith("#"):
+            continue
         for idx, cell in enumerate(row):
             if idx == len(column_widths):
                 column_widths.append(len(cell))
