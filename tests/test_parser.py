@@ -1,6 +1,7 @@
 """
 Test core behaviour of changelog processing
 """
+
 import csv
 from datetime import date
 from io import StringIO

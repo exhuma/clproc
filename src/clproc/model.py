@@ -1,6 +1,7 @@
 """
 This module contains the data-model used across clproc
 """
+
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum

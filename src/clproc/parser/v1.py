@@ -1,6 +1,7 @@
 """
 Parser for the legacy (first version) changelog.in file
 """
+
 import csv
 import logging
 from dataclasses import replace
@@ -137,7 +138,7 @@ def extract_release_information(
     "release" line and returns it as a mapping from the release-version to the
     given information.
     """
-    reader = csv.reader(changelog_file, dialect='clproc')
+    reader = csv.reader(changelog_file, dialect="clproc")
     output: Dict[Version, ReleaseInformation] = {}
     for row in propagate_first_col(reader):
         # NOTE: Some of this parsing (like skipping comment-lines, e.t.c.) is
