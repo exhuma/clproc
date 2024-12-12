@@ -194,6 +194,11 @@ class ReleaseEntry:
     A sorted collection of log-entries contained in this release.
     """
 
+    all_lines: Tuple[ChangelogEntry, ...] = tuple()
+    """
+    All lines from this release including comments and empty lines.
+    """
+
     def __lt__(self, other: "ReleaseEntry") -> bool:
         if other.version is None:
             return False

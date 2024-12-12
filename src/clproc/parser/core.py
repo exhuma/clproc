@@ -291,18 +291,22 @@ def aggregate_releases(
     ``release_nodes=2`` and part of release "1.2.3" when using
     ``release_nodes=3``.
     """
+    all_lines: List[ChangelogEntry] = []
     logs: List[ChangelogEntry] = []
     last_seen_release: Optional[Version] = None
     release_version: Optional[Version] = None
     emitted_releases = 0
     for entry in rows:
+        all_lines.append(entry)
         if not entry.parsed_content:
             continue
         release_version = make_release_version(
             entry.parsed_content.version, file_metadata.release_nodes
         )
         if last_seen_release and last_seen_release != release_version:
-            yield ReleaseEntry(last_seen_release, None, "", tuple(logs))
+            yield ReleaseEntry(
+                last_seen_release, None, "", tuple(logs), tuple(all_lines)
+            )
             emitted_releases += 1
             if emitted_releases == num_releases:
                 return
@@ -311,7 +315,9 @@ def aggregate_releases(
         last_seen_release = release_version
 
     if logs:
-        yield ReleaseEntry(last_seen_release, None, "", tuple(logs))
+        yield ReleaseEntry(
+            last_seen_release, None, "", tuple(logs), tuple(all_lines)
+        )
 
 
 def extract_metadata(
