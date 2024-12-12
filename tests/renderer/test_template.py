@@ -1,5 +1,6 @@
 import pytest
-from clproc.renderer.changelog_template import aligned, padded, MISSING
+
+from clproc.renderer.changelog_template import aligned, padded
 
 
 @pytest.mark.parametrize(
@@ -17,34 +18,34 @@ from clproc.renderer.changelog_template import aligned, padded, MISSING
         ),
         (
             [
-                ["foo", "bar", MISSING],
+                ["foo", "bar"],
                 ["hello", "world", "john"],
             ],
             [
-                ["foo  ", "bar  ", MISSING],
+                ["foo  ", "bar  "],
                 ["hello", "world", "john"],
             ],
         ),
         (
             [
                 ["foo", "bar", "baz"],
-                ["hello", "world", MISSING],
+                ["hello", "world"],
             ],
             [
                 ["foo  ", "bar  ", "baz"],
-                ["hello", "world", MISSING],
+                ["hello", "world"],
             ],
         ),
         (
             [
                 ["# comment should not affect length"],
                 ["foo", "bar", "baz"],
-                ["hello", "world", MISSING],
+                ["hello", "world"],
             ],
             [
-                ["# comment should not affect length", MISSING, MISSING],
+                ["# comment should not affect length"],
                 ["foo  ", "bar  ", "baz"],
-                ["hello", "world", MISSING],
+                ["hello", "world"],
             ],
         ),
     ],

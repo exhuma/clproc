@@ -6,16 +6,23 @@ The generated file will be sorted and aligned. This renderer was originally
 created to auto-format "changelog.in" file.
 """
 
-from typing import Any, ClassVar, Dict, Iterable, List
 from csv import writer
 from io import StringIO
 from itertools import zip_longest
-
-from packaging.version import Version
+from typing import Any, ClassVar, Dict, Final, Iterable, List
 
 from clproc.model import Changelog, ChangelogEntry, FileMetadata, IssueId
 
-MISSING = object()
+
+class EmptyCell:
+    def __repr__(self) -> str:
+        return f"<EmptyCell @ {hex(id(self))}>"
+
+    def __len__(self) -> int:
+        return 0
+
+
+MISSING: Final[EmptyCell] = EmptyCell()
 
 
 def _issue_id_sort_key(item: IssueId) -> Any:
@@ -104,6 +111,10 @@ def aligned(data: List[List[str]]) -> List[List[str]]:
                 row, column_widths, fillvalue=MISSING
             )
         ]
+        # TODO: This hile-loop may make other checks for empty cells (or empty
+        # strings) redundant
+        while aligned_cells and aligned_cells[-1] == MISSING:
+            aligned_cells.pop(len(aligned_cells) - 1)
         output.append(aligned_cells)
     return output
 
