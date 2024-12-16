@@ -155,19 +155,32 @@ class TemplateRenderer:
         logs = aligned(logs)
         stream = StringIO()
 
-        csv = MyWriter(stream, dialect="clproc")
+        csv = CustomWriter(stream, dialect="clproc")
         csv.writerows(logs)
         return stream.getvalue()
 
 
-class MyWriter:
+class CustomWriter:
+    """
+    A CSV writer that collapses empty lines.
+
+    This does two things:
+
+    - Consecutive empty lines are collapsed into a single empty line
+    - Empty lines are not rendered with quotes
+    """
+
     def __init__(self, stream, dialect):
+        self.stream = stream
         self.writer = writer(stream, dialect=dialect)
 
     def writerows(self, rows: Iterable[list[str]]) -> None:
+        num_empty_lines = 0
         for row in rows:
-            self.writerow(row)
-
-    def writerow(self, row: list[str]) -> None:
-        row = [cell for cell in row if cell != MISSING]
-        self.writer.writerow(row)
+            if len(row) == 1 and row[0].strip() == "":
+                num_empty_lines += 1
+                continue
+            if num_empty_lines:
+                self.stream.write("\n")
+                num_empty_lines = 0
+            self.writer.writerow(row)
