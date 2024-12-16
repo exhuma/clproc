@@ -8,6 +8,7 @@ from clproc.renderer.changelog_template import CustomWriter, aligned, padded
 @pytest.mark.parametrize(
     "values, expected",
     [
+        ([[]], [[]]),
         (
             [
                 ["foo", "bar", "baz"],
