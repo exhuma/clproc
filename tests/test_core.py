@@ -169,11 +169,10 @@ def test_format() -> None:
     data = StringIO(
         "\n".join(
             [
-                "",
-                "",
                 "# -*- changelog-version: 2.0 -*-",
                 "",
-                "fake-header",
+                "",
+                "",
                 "2.7.0 ;doc; foo ;;;;;",
                 "2.7.0 ;added; hello world ;;;x;;",
                 "",
@@ -188,8 +187,12 @@ def test_format() -> None:
     output = core.format_changelog(data).getvalue()
     expected = "\n".join(
         [
+            "# -*- changelog-version: 2.0 -*-",
+            "",
             "2.7.0 ; doc   ; foo           ;;;   ;  ",
             "2.7.0 ; added ; hello world   ;;; h ;  ",
+            "",
+            "# comment",
             "2.7.0 ; added ; hello world 2 ;;;   ; i",
             "",
         ]

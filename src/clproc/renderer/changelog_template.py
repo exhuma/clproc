@@ -142,15 +142,19 @@ class TemplateRenderer:
             key=lambda release: release.version,
             reverse=True,
         ):
-            for log in sorted(
-                release.logs, reverse=True, key=lambda log: log.version
-            ):
-                logs.append(
-                    padded(
-                        format_log(log, file_metadata.issue_url_templates),
-                        inner=" ",
+            for line in release.all_lines:
+                if line.parsed_content:
+                    logs.append(
+                        padded(
+                            format_log(
+                                line.parsed_content,
+                                file_metadata.issue_url_templates,
+                            ),
+                            inner=" ",
+                        )
                     )
-                )
+                else:
+                    logs.append([line.raw_line])
 
         logs = aligned(logs)
         stream = StringIO()
